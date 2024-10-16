@@ -5,7 +5,6 @@ const gameBoard = (function() {
 
     function createCell(position) {
         const cellElement = document.createElement('button');
-        // cellElement.textContent = position + 1;
         cellElement.classList.add('board-cell');
         cellElement.setAttribute('data-position', position);
         boardContainer.appendChild(cellElement);
@@ -65,6 +64,8 @@ console.log(gameBoard.getWinCombinations(0));
 const game = (function() {
 const displayMsgs = document.querySelector('.display-msgs');
 const displayWinRounds = document.querySelector('.win-rounds');
+const displayWinRoundsX = document.querySelector('.win-roundsX');
+const displayWinRoundsO = document.querySelector('.win-roundsO');
 const restart = document.querySelector('.restart');
 
 const players = {
@@ -119,7 +120,7 @@ const computerChoice = () => {
     }
     if (getPlayer("user").turn === false) {
         if (availableCells.length === 0) {
-            displayMsgs.textContent = "It's a tie!";
+            displayMsgs.textContent = "It's a Draw!";
             setTimeout(() => {
                 displayMsgs.textContent = "";
                 gameBoard.resetBoard();
@@ -144,10 +145,14 @@ for (let i = 0; i < 8; i++) {
       winCombination[2].symbol === players.user.symbol) {
      console.log(winCombination[0].symbol, winCombination[1].symbol, winCombination[2].symbol);
      console.log("User Wins!");
+     winCombination.forEach(cell => {
+        cell.element.classList.add('flash');
+    });
      players.user.winner = true;
      displayMsgs.textContent = "User Wins!";
      players.user.winRounds += 1;
-     displayWinRounds.textContent = "X wins: " + players.user.winRounds + " - " + "O wins: " + players.computer.winRounds;
+     displayWinRoundsX.textContent = "X:" + players.user.winRounds;
+     displayWinRoundsO.textContent = "O:" + players.computer.winRounds;
      console.log(players.user.winner);
      setTimeout(resetGame, 3500);
     }
@@ -156,17 +161,22 @@ for (let i = 0; i < 8; i++) {
     winCombination[2].symbol === players.computer.symbol) {
     console.log(winCombination[0].symbol, winCombination[1].symbol, winCombination[2].symbol);
     console.log("Computer Wins!");
+    winCombination.forEach(cell => {
+        cell.element.classList.add('flash');
+    });
     players.computer.winner = true;
     displayMsgs.textContent = "Computer Wins!";
     players.computer.winRounds += 1;
-    displayWinRounds.textContent = "X wins: " + players.user.winRounds + " - " + "O wins: " + players.computer.winRounds;
+    displayWinRoundsX.textContent = "X:" + players.user.winRounds;
+    displayWinRoundsO.textContent = "O:" + players.computer.winRounds;
     console.log(players.computer.winner);
     setTimeout(resetGame, 3500); 
  }
 };
 };
 
-displayWinRounds.textContent = "X wins: " + players.user.winRounds + " - " + "O wins: " + players.computer.winRounds;
+displayWinRoundsX.textContent = "X:" + players.user.winRounds;
+displayWinRoundsO.textContent = "O:" + players.computer.winRounds;
 function resetGame() {
     players.user.winner = false;
     players.computer.winner = false;
@@ -174,13 +184,18 @@ function resetGame() {
     players.computer.turn = false;
     displayMsgs.textContent = "";
     gameBoard.resetBoard();
+    for (let i = 0; i < 9; i++) {
+        const cell = gameBoard.getCell(i);
+        cell.element.classList.remove('flash');
+    }
 }
 
 restart.addEventListener('click', () => {
     resetGame();
     players.computer.winRounds = 0;
     players.user.winRounds = 0;
-    displayWinRounds.textContent = "X wins: " + players.user.winRounds + " - " + "O wins: " + players.computer.winRounds;
+    displayWinRoundsX.textContent = "X:" + players.user.winRounds;
+    displayWinRoundsO.textContent = "O:" + players.computer.winRounds;    
 })
 
     return {    
